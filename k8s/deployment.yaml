@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalogapi
+  labels:
+    app: catalogapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: catalogapi
+  template:
+    metadata:
+      labels:
+        app: catalogapi
+    spec:
+      containers:
+        - name: catalogapi
+          image: catalogapi:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"
+            - name: ConnectionStrings__CatalogDB
+              valueFrom:
+                secretKeyRef:
+                  name: catalogapi-secret
+                  key: connection-string
+            - name: JwtSettings__SecretKey
+              valueFrom:
+                secretKeyRef:
+                  name: catalogapi-secret
+                  key: jwt-secret-key
+            - name: JwtSettings__ExpiracaoHoras
+              valueFrom:
+                configMapKeyRef:
+                  name: catalogapi-config
+                  key: jwt-expiracao-horas
+            - name: RabbitMQ__Host
+              valueFrom:
+                configMapKeyRef:
+                  name: catalogapi-config
+                  key: rabbitmq-host
+            - name: RabbitMQ__VHost
+              valueFrom:
+                configMapKeyRef:
+                  name: catalogapi-config
+                  key: rabbitmq-vhost
+            - name: RabbitMQ__Username
+              valueFrom:
+                secretKeyRef:
+                  name: catalogapi-secret
+                  key: rabbitmq-username
+            - name: RabbitMQ__Password
+              valueFrom:
+                secretKeyRef:
+                  name: catalogapi-secret
+                  key: rabbitmq-password
