@@ -43,15 +43,14 @@ namespace CatalogAPI.Application.Services
             if (existe)
                 throw new Exception("Você já possui esse jogo em sua biblioteca");
 
-            await _publishEndpoint.Publish(new OrderPlacedEvent
-            {
-                OrderId = Guid.NewGuid(),
-                UserId = _infoToken.Id,
-                JogoId = game.Id,
-                Titulo = game.Titulo,
-                Preco = game.Preco,
-                CriadoEm = DateTime.UtcNow
-            });
+            await _publishEndpoint.Publish(new OrderPlacedEvent(
+                Guid.NewGuid(),
+                _infoToken.Id,
+                game.Id,
+                game.Titulo,
+                game.Preco,
+                DateTime.UtcNow
+            ));
 
             return true;
         }
