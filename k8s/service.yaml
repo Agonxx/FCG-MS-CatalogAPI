@@ -2,11 +2,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: catalogapi
+  namespace: fiapcloudgames
 spec:
   selector:
     app: catalogapi
   ports:
     - protocol: TCP
-      port: 80
+      port: 5002
       targetPort: 8080
-  type: ClusterIP
+  type: LoadBalancer
